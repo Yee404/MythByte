@@ -40,10 +40,18 @@ right = cv2.resize(right, (320, 240))
 print(left.shape)
 print(right.shape)
 
+# ── ANAGLIFO ROJO/CIAN ────────────────────────────────────────────────────────
 start_proc = time.time()
-stereo = cv2.hconcat([left, right])
+
+# Canal R de left → ojo izquierdo (rojo)
+# Canales G y B de right → ojo derecho (cian)
+anaglyph = left.copy()
+anaglyph[:, :, 0] = right[:, :, 0]  # B → right
+anaglyph[:, :, 1] = right[:, :, 1]  # G → right
+anaglyph[:, :, 2] = left[:, :, 2]   # R → left
+
 output_path = os.path.join(base, "stereo.jpg")
-cv2.imwrite(output_path, stereo, [int(cv2.IMWRITE_JPEG_QUALITY), 50])
+cv2.imwrite(output_path, anaglyph, [int(cv2.IMWRITE_JPEG_QUALITY), 50])
 print("Guardado en:", output_path)
 end_proc = time.time()
 
